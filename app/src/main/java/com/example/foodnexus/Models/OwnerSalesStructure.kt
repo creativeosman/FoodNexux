@@ -1,7 +1,7 @@
-package com.example.foodnexus.Structures
+package com.example.foodnexus.Models
 
 data class OwnerSalesStructure(
     val orderId:String,
     val orderItems:String,
-    val orderPrice:String,
+    val orderPrice:Double,
 )

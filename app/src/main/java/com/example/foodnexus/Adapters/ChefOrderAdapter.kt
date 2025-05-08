@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodnexus.Models.ChefOrderStructure
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.ChefOrderStructure
 
 class ChefOrderAdapter(
     private val orders: List<ChefOrderStructure>,
@@ -26,7 +26,6 @@ class ChefOrderAdapter(
             orderId.text = "Order #${order.id}"
             orderTotal.text = "Total: PKR ${order.total}"
             orderItems.text = "${order.items.size} items"
-
             btnAccept.setOnClickListener { onAccept(order.id) }
             btnReject.setOnClickListener { onReject(order.id) }
         }
@@ -42,5 +41,5 @@ class ChefOrderAdapter(
         holder.bind(orders[position])
     }
 
-    override fun getItemCount(): Int = orders.size
+    override fun getItemCount() = orders.size
 }

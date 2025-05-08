@@ -1,4 +1,4 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.os.Bundle
 import android.view.LayoutInflater

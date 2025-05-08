@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.WaiterCartStructure
+import com.example.foodnexus.Models.WaiterCartStructure
 class WaiterCartAdapter(
     private val items: MutableList<WaiterCartStructure>,
     private val onIncreaseClicked: (Int) -> Unit,
@@ -20,12 +20,12 @@ class WaiterCartAdapter(
         private val itemQuantity: TextView = itemView.findViewById(R.id.cartItemQuantity)
         private val increaseButton: ImageButton = itemView.findViewById(R.id.btnIncrease)
         private val decreaseButton: ImageButton = itemView.findViewById(R.id.btnDecrease)
-        private val itemRecipe: TextView = itemView.findViewById(R.id.CartItemRecipe)
+        private val itemRecipe: TextView = itemView.findViewById(R.id.CustomizeRecipe)
         fun bind(item: WaiterCartStructure) {
             itemName.text = item.itemName
 
             // Update price based on quantity
-            val basePrice = item.itemPrice.toDoubleOrNull() ?: 0.0
+            val basePrice = item.itemPrice
             val totalPrice = basePrice * item.quantity
             itemPrice.text = totalPrice.toString()
             itemQuantity.text = item.quantity.toString()
@@ -47,3 +47,5 @@ class WaiterCartAdapter(
 
     override fun getItemCount(): Int = items.size
 }
+
+

@@ -1,8 +1,8 @@
-package com.example.foodnexus.Structures
+package com.example.foodnexus.Models
 
 data class OwnerMenuStructure(
     val itemId:String,
     val itemName:String,
     val itemRecipe:String,
-    val itemPrice:String
+    val itemPrice:Double
 )

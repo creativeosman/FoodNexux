@@ -12,8 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodnexus.Fragments.RestaurantMenuFragment
-import com.example.foodnexus.Structures.OwnerMenuStructure
+import com.example.foodnexus.Models.OwnerMenuStructure
 import com.example.foodnexus.R
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,7 +45,7 @@ class OwnerMenuAdapter(
 
         holder.itemName.text=itemData.itemName
         holder.itemRecipe.text=itemData.itemRecipe
-        holder.itemPrice.text=itemData.itemPrice
+        holder.itemPrice.text=itemData.itemPrice.toString()
 
         holder.itemMenu.setOnClickListener {
             showPopupMenu(holder.itemMenu, itemData, position)
@@ -103,15 +102,15 @@ class OwnerMenuAdapter(
 
         itemNameEditText.setText(itemData.itemName)
         itemRecipeEditText.setText(itemData.itemRecipe)
-        itemPriceEditText.setText(itemData.itemPrice)
+        itemPriceEditText.setText(itemData.itemPrice.toString())
         btnUpdate.text = "Update"
 
         btnUpdate.setOnClickListener {
             val newItemName = itemNameEditText.text.toString().trim()
             val newItemRecipe = itemRecipeEditText.text.toString().trim()
-            val newItemPrice = itemPriceEditText.text.toString().trim()
+            val newItemPrice = itemPriceEditText.text.toString().trim().toDouble()
 
-            if (newItemName.isEmpty() || newItemRecipe.isEmpty()||newItemPrice.isEmpty()) {
+            if (newItemName.isEmpty() || newItemRecipe.isEmpty()||newItemPrice==0.0) {
                 Toast.makeText(context, "Please enter all details", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

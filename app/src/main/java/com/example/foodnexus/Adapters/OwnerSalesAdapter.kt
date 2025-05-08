@@ -3,17 +3,16 @@ package com.example.foodnexus.Adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodnexus.Fragments.RestaurantsSalesFragment
+import com.example.foodnexus.ViewModels.OwnerSalesFragment
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.OwnerSalesStructure
+import com.example.foodnexus.Models.OwnerSalesStructure
 import com.google.firebase.firestore.FirebaseFirestore
 
 class OwnerSalesAdapter(
     private var arrayList: ArrayList<OwnerSalesStructure>,
-    private var fragment: RestaurantsSalesFragment,
+    private var fragment: OwnerSalesFragment,
     private var userId:String
 ): RecyclerView.Adapter<OwnerSalesAdapter.ViewHolder>() {
     private var firestore= FirebaseFirestore.getInstance()
@@ -40,6 +39,6 @@ class OwnerSalesAdapter(
 
         holder.orderId.text=itemData.orderId
         holder.orderItems.text=itemData.orderItems
-        holder.orderPrice.text=itemData.orderPrice
+        holder.orderPrice.text=itemData.orderPrice.toString()
     }
 }

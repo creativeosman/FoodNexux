@@ -1,4 +1,5 @@
-package com.example.foodnexus.Structures
+package com.example.foodnexus.Models
+
 data class ChefOrderStructure(
     val id: String,
     val total: String,

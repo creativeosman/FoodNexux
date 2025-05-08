@@ -1,23 +1,21 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.WaiterMenuAdapter
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.WaiterMenuStructure
+import com.example.foodnexus.Models.WaiterMenuStructure
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentWaiterMenuBinding
-import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 class WaiterMenuFragment : Fragment() {
@@ -32,7 +30,7 @@ class WaiterMenuFragment : Fragment() {
     private val menuItems = ArrayList<WaiterMenuStructure>()
 
     private var userId: String = ""
-    private var restaurantName: String = ""
+    private var name: String = ""
     private var ownerId: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -73,8 +71,8 @@ class WaiterMenuFragment : Fragment() {
             return false
         }
 
-        restaurantName = preferences.getString("name", "Restaurant").toString()
-        binding.RestaurantMenuTvName.text = restaurantName
+        name = preferences.getString("name", "Name").toString()
+        binding.RestaurantMenuTvName.text = name
         return true
     }
 
@@ -120,13 +118,16 @@ class WaiterMenuFragment : Fragment() {
     private fun processMenuData(documents: List<DocumentSnapshot>?) {
         menuItems.clear()
         documents?.forEach { doc ->
+
             menuItems.add(WaiterMenuStructure(
                 doc.id,
                 doc.getString("Item Name") ?: "Unnamed Item",
                 doc.getString("Item Recipe") ?: "No description",
-                doc.getString("Item Price") ?: "0"
+                doc.getDouble("Item Price") ?:0.0
             ))
         }
+
+
         updateUIState()
     }
 

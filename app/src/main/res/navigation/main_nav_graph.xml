@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.foodnexus.Fragments.SplashFragment"
+        android:name="com.example.foodnexus.ViewModels.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/roleAssignFragment"
-        android:name="com.example.foodnexus.Fragments.RoleAssignFragment"
+        android:name="com.example.foodnexus.ViewModels.RoleAssignFragment"
         android:label="fragment_role_assign"
         tools:layout="@layout/fragment_role_assign" >
         <action
@@ -73,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/restaurantMenuFragment"
-        android:name="com.example.foodnexus.Fragments.RestaurantMenuFragment"
+        android:name="com.example.foodnexus.ViewModels.OwnerMenuFragment"
         android:label="fragment_restaurant_menu"
         tools:layout="@layout/fragment_restaurant_menu" >
         <action
@@ -91,7 +91,7 @@
     </fragment>
     <fragment
         android:id="@+id/waiterMenuFragment"
-        android:name="com.example.foodnexus.Fragments.WaiterMenuFragment"
+        android:name="com.example.foodnexus.ViewModels.WaiterMenuFragment"
         android:label="fragment_waiter_menu"
         tools:layout="@layout/fragment_waiter_menu" >
         <action
@@ -103,12 +103,12 @@
     </fragment>
     <fragment
         android:id="@+id/chefOrderReceivingFragment"
-        android:name="com.example.foodnexus.Fragments.ChefOrderReceivingFragment"
+        android:name="com.example.foodnexus.ViewModels.ChefOrderReceivingFragment"
         android:label="fragment_chef_order_receiving"
         tools:layout="@layout/fragment_chef_order_receiving" />
     <fragment
         android:id="@+id/resturantsSalesFragment"
-        android:name="com.example.foodnexus.Fragments.RestaurantsSalesFragment"
+        android:name="com.example.foodnexus.ViewModels.OwnerSalesFragment"
         android:label="fragment_resturants_sales"
         tools:layout="@layout/fragment_resturants_sales" >
         <action
@@ -117,7 +117,7 @@
     </fragment>
     <fragment
         android:id="@+id/waiterCartFragment"
-        android:name="com.example.foodnexus.Fragments.WaiterCartFragment"
+        android:name="com.example.foodnexus.ViewModels.WaiterCartFragment"
         android:label="fragment_waiter_cart"
         tools:layout="@layout/fragment_waiter_cart" />
 </navigation>

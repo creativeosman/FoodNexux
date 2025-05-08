@@ -3,7 +3,6 @@ package com.example.foodnexus.Adapters
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.WaiterMenuStructure
+import com.example.foodnexus.Models.WaiterMenuStructure
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -45,27 +44,20 @@ class WaiterMenuAdapter(
 
         holder.itemName.text = menuItem.itemName
         holder.itemRecipe.text = menuItem.itemRecipe
-        holder.itemPrice.text = menuItem.itemPrice
+        holder.itemPrice.text = menuItem.itemPrice.toString()
         holder.addButton.setOnClickListener {
 
             Dialog(context).apply {
                 setContentView(R.layout.cutomize_order_layout)
                 window?.setBackgroundDrawableResource(android.R.color.transparent)
                 setCancelable(true)
-                val etItemName = findViewById<TextView>(R.id.CustomizeOrderEtItemName)
-                val etItemRecipe = findViewById<TextView>(R.id.CustomizeOrderEtItemRecipie)
                 val etCustomizedRecipe = findViewById<TextView>(R.id.CustomizeOrderEtCustomizedRecipie)
                 val btnAddToCart = findViewById<MaterialButton>(R.id.CustomizeOrderBtnAddToCart)
-                val price = findViewById<TextView>(R.id.Price)
-                etItemName.text = menuItem.itemName
-                etItemRecipe.text = menuItem.itemRecipe
-                price.text = menuItem.itemPrice
                 show()
+                etCustomizedRecipe.text = menuItem.itemRecipe
+
                 btnAddToCart.setOnClickListener {
                     customizeRecipe=etCustomizedRecipe.text.toString().trim()
-
-                    Toast.makeText(context,customizeRecipe,Toast.LENGTH_SHORT).show()
-
                     handleAddToCart(menuItem)
                     dismiss()
                 }
@@ -98,11 +90,11 @@ class WaiterMenuAdapter(
 
     private fun addNewItem(cartRef: DocumentReference, menuItem: WaiterMenuStructure) {
         val cartItem = hashMapOf(
-            "itemId" to menuItem.itemId,
-            "itemName" to menuItem.itemName,
-            "itemPrice" to menuItem.itemPrice,
-            "quantity" to 1,
-            "customizeRecipe" to customizeRecipe
+            "Item Id" to menuItem.itemId,
+            "Item Name" to menuItem.itemName,
+            "Item Price" to menuItem.itemPrice,
+            "Quantity" to 1,
+            "Customize Recipe" to customizeRecipe
         )
 
         cartRef.set(cartItem)

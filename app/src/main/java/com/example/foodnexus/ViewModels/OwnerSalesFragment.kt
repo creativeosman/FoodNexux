@@ -1,4 +1,4 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -13,13 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.OwnerSalesAdapter
 import com.example.foodnexus.Utils
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.OwnerSalesStructure
+import com.example.foodnexus.Models.OwnerSalesStructure
 import com.example.foodnexus.databinding.FragmentResturantsSalesBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class RestaurantsSalesFragment : Fragment() {
+class OwnerSalesFragment : Fragment() {
     private var _binding: FragmentResturantsSalesBinding? = null
     private val binding get() = _binding!!
 
@@ -79,7 +79,7 @@ class RestaurantsSalesFragment : Fragment() {
                 for (doc in docs) {
                     val orderId = doc.id
                     val items = doc.getString("OrderedItems") ?: "Unknown"
-                    val totalAmount = doc.getString("TotalAmount") ?: "0"
+                    val totalAmount = doc.getDouble("TotalAmount") ?: 0.0
                     orderList.add(OwnerSalesStructure(orderId, items, totalAmount))
                 }
                 adapter.notifyDataSetChanged()

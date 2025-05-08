@@ -1,4 +1,4 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.WaiterCartAdapter
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.WaiterCartStructure
+import com.example.foodnexus.Models.WaiterCartStructure
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentWaiterCartBinding
 import com.google.firebase.firestore.DocumentSnapshot
@@ -20,7 +20,6 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import java.util.*
-import androidx.core.content.edit
 
 class WaiterCartFragment : Fragment() {
     private var _binding: FragmentWaiterCartBinding? = null
@@ -67,13 +66,14 @@ class WaiterCartFragment : Fragment() {
             .addOnSuccessListener { documents ->
                 arrayList.clear()
                 for (doc in documents) {
-                    val id = doc.getString("itemId").orEmpty()
-                    val name = doc.getString("itemName").orEmpty()
-                    val price = doc.getString("itemPrice").orEmpty()
-                    val quantity = doc.getLong("quantity")?.toInt() ?: 1
-                    val recipe = doc.getString("customizeRecipe").orEmpty()
+                    val id = doc.getString("Item Id").orEmpty()
+                    val name = doc.getString("Item Name").orEmpty()
+                    val price = doc.getDouble("Item Price")?:0.0
+                    val quantity = doc.getLong("Quantity")?.toInt() ?: 1
+                    val recipe = doc.getString("Customize Recipe").orEmpty()
                     arrayList.add(WaiterCartStructure(id, name, price, quantity,recipe))
                 }
+                Utils.showToast(requireContext(),"done")
                 waiterAdapter.notifyDataSetChanged()
                 updatePlaceOrderText()
             }
@@ -109,16 +109,16 @@ class WaiterCartFragment : Fragment() {
     }
 
     private fun updateCartItemInFirestore(item: WaiterCartStructure) {
-        val unitPrice = item.itemPrice.filter { it.isDigit() || it == '.' }.toDoubleOrNull() ?: 0.0
+        val unitPrice = item.itemPrice
         val newTotal = unitPrice * item.quantity
         val formatted = "%.2f".format(newTotal)
 
         val map = mapOf(
-            "itemId" to item.itemId,
-            "itemName" to item.itemName,
-            "itemPrice" to formatted,
-            "quantity" to item.quantity,
-            "customizeRecipe" to item.itemCustomizeRecipe
+            "Item Id" to item.itemId,
+            "Item Name" to item.itemName,
+            "Item Price" to formatted,
+            "Quantity" to item.quantity,
+            "Customize Recipe" to item.itemCustomizeRecipe
         )
 
         firestore.collection("Restaurants")
@@ -154,7 +154,7 @@ class WaiterCartFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun updatePlaceOrderText() {
-        val total = arrayList.sumOf { it.itemPrice.toDoubleOrNull() ?: 0.0 }
+        val total = arrayList.sumOf { it.itemPrice }
         binding.WaiterCartPlaceOrderButton.text = "Proceed with: %.2f".format(total)
     }
 
@@ -164,21 +164,21 @@ class WaiterCartFragment : Fragment() {
             return
         }
 
-        val total = arrayList.sumOf { it.itemPrice.toDoubleOrNull() ?: 0.0 }
+        val total = arrayList.sumOf { it.itemPrice }
         val orderData = mapOf(
-            "waiterId" to userId,
-            "items" to arrayList.map { item ->
+            "Waiter Id" to userId,
+            "Items" to arrayList.map { item ->
                 mapOf(
-                    "itemId" to item.itemId,
-                    "itemName" to item.itemName,
-                    "quantity" to item.quantity,
-                    "itemPrice" to item.itemPrice,
-                    "customizeRecipe" to item.itemCustomizeRecipe
+                    "Item Id" to item.itemId,
+                    "Item Name" to item.itemName,
+                    "Quantity" to item.quantity,
+                    "Item Price" to item.itemPrice,
+                    "Customize Recipe" to item.itemCustomizeRecipe
                 )
             },
-            "totalPrice" to "%.2f".format(total),
-            "status" to "pending",
-            "timestamp" to Date()
+            "Total Price" to "%.2f".format(total),
+            "Status" to "pending",
+            "Time stamp" to Date()
         )
 
         firestore.collection("Restaurants")
@@ -197,16 +197,16 @@ class WaiterCartFragment : Fragment() {
     private fun listenOrderStatus(orderId: String) {
         val orderDoc = firestore.collection("Restaurants")
             .document(ownerId)
-            .collection("PendingOrders")
+            .collection("Pending Orders")
             .document(orderId)
 
         orderListener = orderDoc.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, error ->
             if (error != null || snapshot == null || !snapshot.exists()) return@EventListener
-            val status = snapshot.getString("status").orEmpty()
+            val status = snapshot.getString("Status").orEmpty()
             when (status) {
                 "accepted" -> {
                     // move to preparing and clear cart
-                    orderDoc.update("status", "preparing")
+                    orderDoc.update("Status", "preparing")
                     clearCart()
                     orderListener?.remove()
                     Toast.makeText(requireContext(), "Order accepted, preparing now", Toast.LENGTH_SHORT).show()
@@ -244,3 +244,5 @@ class WaiterCartFragment : Fragment() {
         _binding = null
     }
 }
+
+

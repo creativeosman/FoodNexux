@@ -52,7 +52,6 @@
             android:id="@+id/WaiterTvRecipe"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_4sdp"
             android:layout_marginEnd="@dimen/_48sdp"
             android:text="Delicious spicy burger"
             android:textSize="@dimen/_14ssp"

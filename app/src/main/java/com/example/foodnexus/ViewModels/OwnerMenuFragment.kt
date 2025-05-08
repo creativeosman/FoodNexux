@@ -1,4 +1,4 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -15,13 +15,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.OwnerMenuAdapter
 import com.example.foodnexus.R
-import com.example.foodnexus.Structures.OwnerMenuStructure
+import com.example.foodnexus.Models.OwnerMenuStructure
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentRestaurantMenuBinding
 import com.example.foodnexus.databinding.AddResturantMenuDialogBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
-class RestaurantMenuFragment : Fragment() {
+class OwnerMenuFragment : Fragment() {
     private var _binding: FragmentRestaurantMenuBinding? = null
     private val binding get() = _binding!!
 
@@ -84,7 +84,7 @@ class RestaurantMenuFragment : Fragment() {
         userId = preferences.getString("userId", null).toString()
         restaurantName=preferences.getString("restaurantName",null).toString()
 
-        binding.RestaurantMenuTvName.setText(restaurantName)
+        binding.RestaurantMenuTvName.text=restaurantName
 
 
         arrayList = ArrayList()
@@ -110,9 +110,9 @@ class RestaurantMenuFragment : Fragment() {
         dialogBinding.DialogBtnAdd.setOnClickListener {
             val name = dialogBinding.DialogEtItemName.text.toString().trim()
             val recipe = dialogBinding.DialogEtItemRecipe.text.toString().trim()
-            val price = dialogBinding.DialogEtItemPrice.text.toString().trim()
+            val price = dialogBinding.DialogEtItemPrice.text.toString().trim().toDouble()
 
-            if (name.isEmpty() || recipe.isEmpty()||price.isEmpty()) {
+            if (name.isEmpty() || recipe.isEmpty()||price==0.0) {
                 Utils.showToast(requireContext(), "Please fill out all fields.")
             } else {
                 dialog.dismiss()
@@ -123,7 +123,7 @@ class RestaurantMenuFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addItem(name: String, recipe: String,price:String) {
+    private fun addItem(name: String, recipe: String, price: Double) {
         try {
             Utils.showProgress(loadingDialog)
 
@@ -173,7 +173,7 @@ class RestaurantMenuFragment : Fragment() {
                     val itemId = doc.id
                     val itemName = doc.getString("Item Name") ?: "Unknown"
                     val itemRecipe = doc.getString("Item Recipe") ?: "Unknown"
-                    val itemPrice = doc.getString("Item Price") ?: "Unknown"
+                    val itemPrice = doc.getDouble("Item Price") ?: 0.0
                     arrayList.add(OwnerMenuStructure(itemId, itemName, itemRecipe,itemPrice))
                 }
                 adapter.notifyDataSetChanged()

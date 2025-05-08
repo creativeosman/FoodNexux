@@ -1,4 +1,4 @@
-package com.example.foodnexus.Fragments
+package com.example.foodnexus.ViewModels
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -50,7 +50,7 @@ class SplashFragment : Fragment() {
                 "Chef" -> findNavController().navigate(R.id.action_splashFragment_to_chefOrderReceivingFragment)
                 else -> showAuthOptions() // Fallback if role is not recognized
             }
-        }, 500)
+        }, 5000)
     }
 
     private fun showAuthOptions() {
