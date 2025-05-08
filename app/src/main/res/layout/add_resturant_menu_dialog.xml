@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/_8sdp"
+        android:backgroundTint="@color/primaryColor"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:id="@+id/DialogTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add new item"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/_18ssp"
+
+                />
+            <EditText
+                android:id="@+id/DialogEtItemName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Name"
+                android:layout_below="@+id/DialogTitle"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:background="@drawable/bg_edit_text"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColorHint="@color/black"/>
+            <EditText
+                android:id="@+id/DialogEtItemRecipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Recipe"
+                android:layout_below="@+id/DialogEtItemName"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:background="@drawable/bg_edit_text"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:inputType="textCapCharacters"
+                android:textColorHint="@color/black"/>
+            <EditText
+                android:id="@+id/DialogEtItemPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Price in Rs"
+                android:layout_below="@+id/DialogEtItemRecipe"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:background="@drawable/bg_edit_text"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:inputType="number"
+                android:textColorHint="@color/black"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/DialogBtnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/DialogEtItemPrice"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:backgroundTint="@color/black"/>
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

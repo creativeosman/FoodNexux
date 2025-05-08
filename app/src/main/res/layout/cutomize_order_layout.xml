@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_10sdp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
+        >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Place Order"
+            android:textSize="@dimen/_20ssp"
+            android:layout_margin="@dimen/_20sdp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+        <EditText
+            android:id="@+id/CustomizeOrderEtItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_text"
+            android:layout_below="@id/title"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:hint="Pizza"
+            android:padding="@dimen/_6sdp"
+            />
+        <EditText
+            android:id="@+id/CustomizeOrderEtItemRecipie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_text"
+            android:layout_below="@id/CustomizeOrderEtItemName"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:hint="Recipie"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:padding="@dimen/_6sdp"
+            />
+        <EditText
+            android:id="@+id/CustomizeOrderEtCustomizedRecipie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_text"
+            android:layout_below="@id/CustomizeOrderEtItemRecipie"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:hint="Custmized Recipie"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:padding="@dimen/_6sdp"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/CustomizeOrderBtnAddToCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/CustomizeOrderEtCustomizedRecipie"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/_15sdp"
+            android:backgroundTint="@color/black"
+            android:text="Add To Cart"
+            />
+        <TextView
+            android:id="@+id/Price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/CustomizeOrderEtCustomizedRecipie"
+            android:text="Price"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_toLeftOf="@id/CustomizeOrderBtnAddToCart"
+            />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

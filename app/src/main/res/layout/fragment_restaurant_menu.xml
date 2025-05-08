@@ -1,0 +1,108 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.RestaurantMenuFragment">
+
+
+    <LinearLayout
+        android:id="@+id/LinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:background="@drawable/bg_linear_layout"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            app:cardCornerRadius="@dimen/_100sdp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/logo"/>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/RestaurantMenuTvName"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textSize="@dimen/_17ssp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="center"
+
+            />
+
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/RestaurantMenuImgBtnMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/menu"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"/>
+
+
+    <TextView
+        android:id="@+id/RestaurantMenuTvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Menu"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textSize="@dimen/_18ssp"
+        android:layout_below="@+id/LinearLayout"
+        />
+    <ImageButton
+        android:id="@+id/RestaurantMenuImgBtnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_add_24"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Image"
+        android:padding="15dp"
+        android:layout_below="@id/LinearLayout"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RestaurantMenuRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RestaurantMenuTvTitle"
+        android:layout_marginTop="@dimen/_10sdp"
+
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/LinearLayout">
+        <TextView
+            android:id="@+id/RestaurantMenuTvAddClasses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Your Menu Item"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/_18ssp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>
