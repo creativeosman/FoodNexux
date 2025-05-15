@@ -18,15 +18,7 @@
             android:layout_height="120dp"
             android:src="@drawable/logo"
             />
-        <TextView
-            android:id="@+id/SignupFragmentTvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Owner Sign Up"
-            android:textSize="@dimen/_20ssp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:textColor="@color/black"
-            android:textStyle="bold"/>
+
     </LinearLayout>
     <TextView
         android:id="@+id/SignupFragmentTvDetails"
@@ -63,7 +55,7 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
+                android:padding="@dimen/_8sdp"
                 />
             <EditText
                 android:id="@+id/SignupFragmentEtEmail"
@@ -73,8 +65,9 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp"/>
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textEmailAddress"/>
             <EditText
                 android:id="@+id/SignupFragmentEtRestaurantName"
                 android:layout_width="match_parent"
@@ -83,7 +76,7 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
+                android:padding="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_7sdp"
                 />
             <EditText
@@ -94,7 +87,7 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
+                android:padding="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_7sdp"/>
 
 
@@ -106,8 +99,9 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp"/>
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="number"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,8 +110,9 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,8 +121,9 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
 
 
             <com.google.android.material.button.MaterialButton

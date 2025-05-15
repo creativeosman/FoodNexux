@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/_8sdp"
         android:backgroundTint="@color/primaryColor"
-        app:cardCornerRadius="@dimen/_20sdp"
         >
         <RelativeLayout
             android:layout_width="match_parent"

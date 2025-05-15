@@ -66,7 +66,8 @@
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
-                android:padding="@dimen/_5sdp" />
+                android:padding="@dimen/_5sdp"
+                />
 
             <EditText
                 android:id="@+id/SignupFragmentEtStaffId"
@@ -88,7 +89,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textEmailAddress"/>
 
             <EditText
                 android:id="@+id/SignupFragmentEtPhoneNumber"
@@ -99,7 +101,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="number"/>
 
             <EditText
                 android:id="@+id/SignupFragmentEtPassword"
@@ -110,7 +113,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
 
             <EditText
                 android:id="@+id/SignupFragmentEtConfirmPassword"
@@ -121,7 +125,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
 
             <!-- Role Dropdown -->
 <!--            <TextView-->
