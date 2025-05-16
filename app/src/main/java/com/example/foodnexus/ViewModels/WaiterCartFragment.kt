@@ -111,12 +111,11 @@ class WaiterCartFragment : Fragment() {
     private fun updateCartItemInFirestore(item: WaiterCartStructure) {
         val unitPrice = item.itemPrice
         val newTotal = unitPrice * item.quantity
-        val formatted = "%.2f".format(newTotal)
 
         val map = mapOf(
             "Item Id" to item.itemId,
             "Item Name" to item.itemName,
-            "Item Price" to formatted,
+            "Item Price" to newTotal,
             "Quantity" to item.quantity,
             "Customize Recipe" to item.itemCustomizeRecipe
         )
