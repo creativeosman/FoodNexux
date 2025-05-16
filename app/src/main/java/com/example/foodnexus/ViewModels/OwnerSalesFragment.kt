@@ -67,7 +67,6 @@ class OwnerSalesFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun loadOrders() {
         Utils.showProgress(loadingDialog)
-
         firestore.collection("Restaurants")
             .document(userId)
             .collection("Orders")

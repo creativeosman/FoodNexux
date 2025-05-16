@@ -1,5 +1,6 @@
 package com.example.foodnexus.ViewModels
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -131,6 +132,7 @@ class WaiterMenuFragment : Fragment() {
         updateUIState()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateUIState() {
         val isEmpty = menuItems.isEmpty()
         binding.RestaurantMenuRecyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE

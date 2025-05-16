@@ -51,7 +51,6 @@ class OwnerMenuAdapter(
             showPopupMenu(holder.itemMenu, itemData, position)
         }
 
-
     }
 
     private fun showPopupMenu(view: View, itemData: OwnerMenuStructure, position: Int) {
@@ -94,7 +93,6 @@ class OwnerMenuAdapter(
     private fun showUpdateDialog(itemData: OwnerMenuStructure, position: Int) {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.add_resturant_menu_dialog)
-
         val itemNameEditText = dialog.findViewById<EditText>(R.id.DialogEtItemName)
         val itemRecipeEditText = dialog.findViewById<EditText>(R.id.DialogEtItemRecipe)
         val itemPriceEditText = dialog.findViewById<EditText>(R.id.DialogEtItemPrice)
