@@ -52,9 +52,17 @@
             android:layout_height="wrap_content"
             android:text="Rs. "
             android:textSize="@dimen/_14ssp"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/primaryColor"
             app:layout_constraintStart_toStartOf="@id/cartItemName"
             app:layout_constraintTop_toBottomOf="@id/CustomizeRecipe" />
+        <TextView
+            android:id="@+id/CustomizeRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/cartItemName"
+            app:layout_constraintStart_toStartOf="@+id/cartItemName"
+            android:text=""
+            android:textSize="@dimen/_13sdp"/>
         <TextView
             android:id="@+id/cartItemPrice"
             android:layout_width="wrap_content"
@@ -64,15 +72,6 @@
             android:textColor="@android:color/holo_green_dark"
             app:layout_constraintStart_toEndOf="@id/Price"
             app:layout_constraintTop_toBottomOf="@id/CustomizeRecipe" />
-        <TextView
-            android:id="@+id/CustomizeRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/cartItemName"
-            app:layout_constraintStart_toStartOf="@id/cartItemName"
-            android:text="hello"
-            android:textSize="@dimen/_13sdp"/>
-
         <LinearLayout
             android:id="@+id/quantityLayout"
             android:layout_width="wrap_content"
@@ -81,7 +80,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/Price">
+            app:layout_constraintTop_toBottomOf="@id/cartItemName">
 
             <ImageButton
                 android:id="@+id/btnDecrease"
@@ -107,6 +106,8 @@
                 android:background="@drawable/qty_btn_bg"
                 android:src="@drawable/baseline_add_24"
                 android:contentDescription="Increase Quantity" />
+
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

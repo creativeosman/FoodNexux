@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewModels.WaiterMenuFragment">
+    tools:context=".Fragments.WaiterMenuFragment">
 
     <!-- Header Section -->
     <LinearLayout
@@ -15,16 +15,12 @@
         android:gravity="center">
 
         <!-- Logo Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
-            app:cardCornerRadius="@dimen/_100sdp">
+
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/logo"
-                android:scaleType="fitXY"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_width="250sp"
+                android:layout_height="250sp"
+                android:src="@drawable/logo"/>
+
 
         <!-- Restaurant Name -->
         <TextView

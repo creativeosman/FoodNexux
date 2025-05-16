@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_250sdp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_3sdp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
-        >
+        android:layout_height="250dp"
+        android:background="@color/primaryColor">
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Place Order"
+            android:text="Customize Order"
             android:textSize="@dimen/_20ssp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginVertical="@dimen/_20sdp"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"/>
-
+            />
         <EditText
             android:id="@+id/CustomizeOrderEtCustomizedRecipie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_edit_text"
             android:layout_below="@id/title"
+            android:hint="Custmized Recipe"
             android:layout_marginHorizontal="@dimen/_20sdp"
-            android:hint="Custmized Recipie"
-            android:layout_marginTop="@dimen/_15sdp"
             android:padding="@dimen/_6sdp"
             />
         <com.google.android.material.button.MaterialButton
@@ -37,8 +36,16 @@
             android:layout_below="@id/CustomizeOrderEtCustomizedRecipie"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/_15sdp"
-            android:backgroundTint="@color/black"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:elevation="15dp"
+            android:translationZ="8dp"
+            app:cornerRadius="12dp"
+            app:strokeWidth="4dp"
+            app:strokeColor="@color/black"
+            android:backgroundTint="@android:color/white"
             android:text="Add To Cart"
+
             />
 
     </RelativeLayout>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ViewModels.RoleAssignFragment">
+    tools:context=".Fragments.RoleAssignFragment">
     <LinearLayout
         android:id="@+id/roleAssignFragmentLinearLayout"
         android:layout_width="match_parent"
@@ -101,7 +101,7 @@
         android:id="@+id/RoleAssignFragmentBtnOwner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/primaryColor"
         android:text="Owner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
