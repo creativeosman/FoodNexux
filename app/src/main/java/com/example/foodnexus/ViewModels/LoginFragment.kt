@@ -1,5 +1,6 @@
 package com.example.foodnexus.ViewModels
 
+
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -14,7 +15,10 @@ import com.example.foodnexus.R
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -23,7 +27,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth by lazy { FirebaseAuth.getInstance() }
-    private val db by lazy { FirebaseFirestore.getInstance() }
+    private val db by lazy { FirebaseDatabase.getInstance().reference }
     private lateinit var prefs: SharedPreferences
     private val progressDialog by lazy { createProgressDialog() }
 
@@ -95,21 +99,32 @@ class LoginFragment : Fragment() {
                     return@launch
                 }
 
-                // Fetch role document
-                val roleDoc = db.collection("Roles").document(email).get().await()
-                if (!roleDoc.exists()) {
-                    Utils.showToast(requireContext(), "User role not found.")
-                    return@launch
-                }
+                db.child("Roles").child(user.email!!.replace(".", ","))
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (!snapshot.exists()) {
+                                Utils.showToast(requireContext(), "User role not found.")
+                                Utils.hideProgress(progressDialog)
+                                return
+                            }
 
-                val role = roleDoc.getString("role") ?: ""
-                val providedId = roleDoc.getString("providedId") ?: ""
+                            val role = snapshot.child("role").getValue(String::class.java) ?: ""
+                            val providedId = snapshot.child("providedId").getValue(String::class.java) ?: ""
 
-                saveSessionAndNavigate(role, user.uid, providedId)
+                            lifecycleScope.launch {
+                                saveSessionAndNavigate(role, user.uid, providedId)
+                                Utils.hideProgress(progressDialog)
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Utils.showToast(requireContext(), "DB Error: ${error.message}")
+                            Utils.hideProgress(progressDialog)
+                        }
+                    })
 
             } catch (e: Exception) {
                 Utils.showToast(requireContext(), "Login failed: ${e.localizedMessage}")
-            } finally {
                 Utils.hideProgress(progressDialog)
             }
         }
@@ -124,58 +139,54 @@ class LoginFragment : Fragment() {
 
         when (role) {
             "Owner" -> {
-                val restDoc = db.collection("Restaurants").document(uid).get().await()
-                val restName = restDoc.getString("restaurantName") ?: ""
-                editor.putString("restaurantName", restName)
-                editor.putString("role","Owner")
-                editor.apply()
-                findNavController().navigate(R.id.action_loginFragment_to_restaurantMenuFragment)
-            }
-            "Waiter" -> {
-                val staffDoc = db.collection("Restaurants")
-                    .document(providedId)
-                    .collection("Staff")
-                    .document(uid)
-                    .get()
-                    .await()
+                db.child("Restaurants").child(uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val restName = snapshot.child("restaurantName").getValue(String::class.java) ?: ""
+                            editor.putString("restaurantName", restName)
+                            editor.putString("role", "Owner")
+                            editor.apply()
+                            findNavController().navigate(R.id.action_loginFragment_to_restaurantMenuFragment)
+                        }
 
-                if (!staffDoc.exists()) {
-                    Utils.showToast(requireContext(), "Staff data missing.")
-                    return
-                }
-
-                editor.apply {
-                    putString("ownerId", providedId)
-                    putString("userId", uid)
-                    putString("name", staffDoc.getString("name"))
-                    putString("role","Waiter")
-                }.apply()
-                findNavController().navigate(R.id.action_loginFragment_to_waiterMenuFragment)
+                        override fun onCancelled(error: DatabaseError) {
+                            Utils.showToast(requireContext(), "Error: ${error.message}")
+                        }
+                    })
             }
 
-            "Chef" -> {
-                val staffDoc = db.collection("Restaurants")
-                    .document(providedId)
-                    .collection("Staff")
-                    .document(uid)
-                    .get()
-                    .await()
+            "Waiter", "Chef" -> {
+                db.child("Restaurants")
+                    .child(providedId)
+                    .child("Staff")
+                    .child(uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (!snapshot.exists()) {
+                                Utils.showToast(requireContext(), "Staff data missing.")
+                                return
+                            }
 
-                if (!staffDoc.exists()) {
-                    Utils.showToast(requireContext(), "Staff data missing.")
-                    return
-                }
+                            editor.apply {
+                                putString("ownerId", providedId)
+                                putString("userId", uid)
+                                putString("name", snapshot.child("name").getValue(String::class.java))
+                                putString("role", role)
+                            }.apply()
 
-                editor.apply {
-                    putString("ownerId", providedId)
-                    putString("userId", uid)
-                    putString("name", staffDoc.getString("name"))
-                    putString("role","Chef")
-                }.apply()
-                findNavController().navigate(R.id.action_loginFragment_to_chefOrderReceivingFragment)
+                            val navId = if (role == "Waiter") {
+                                R.id.action_loginFragment_to_waiterMenuFragment
+                            } else {
+                                R.id.action_loginFragment_to_chefOrderReceivingFragment
+                            }
+                            findNavController().navigate(navId)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Utils.showToast(requireContext(), "Error: ${error.message}")
+                        }
+                    })
             }
-
-
 
             else -> {
                 Utils.showToast(requireContext(), "Unknown role: $role")
