@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.OwnerSignUpFragment">
+    tools:context=".ViewModels.OwnerSignUpFragment">
     <LinearLayout
         android:id="@+id/SignupFragmentLayout"
         android:layout_width="match_parent"
@@ -58,7 +58,7 @@
             <EditText
                 android:id="@+id/SignupFragmentEtOwnerName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:hint="Owner Name"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
@@ -68,7 +68,7 @@
             <EditText
                 android:id="@+id/SignupFragmentEtEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:hint="Enter Email"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
@@ -78,7 +78,7 @@
             <EditText
                 android:id="@+id/SignupFragmentEtRestaurantName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:hint="Restaurant Name"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_edit_text"
@@ -88,7 +88,7 @@
                 />
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:id="@+id/SignupFragmentEtAddress"
                 android:hint="Resturant Address"
                 android:layout_marginHorizontal="@dimen/_15sdp"
@@ -100,7 +100,7 @@
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:id="@+id/SignupFragmentEtPhoneNumber"
                 android:hint="Phone Number"
                 android:layout_marginHorizontal="@dimen/_15sdp"
@@ -110,7 +110,7 @@
                 android:layout_marginTop="@dimen/_7sdp"/>
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:id="@+id/SignupFragmentEtPassword"
                 android:hint="Password"
                 android:layout_marginHorizontal="@dimen/_15sdp"
@@ -120,7 +120,7 @@
                 android:layout_marginTop="@dimen/_7sdp" />
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:id="@+id/SignupFragmentEtConfirmPassword"
                 android:hint="Confirm Password"
                 android:layout_marginHorizontal="@dimen/_15sdp"
@@ -162,5 +162,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

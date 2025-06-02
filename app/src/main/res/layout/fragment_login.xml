@@ -28,10 +28,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:textSize="24sp"
+            android:textSize="@dimen/_25sdp"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <ScrollView
@@ -64,7 +64,7 @@
             <EditText
                 android:id="@+id/LoginFragmentEtEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:background="@drawable/bg_edit_text"
@@ -75,7 +75,7 @@
             <EditText
                 android:id="@+id/LoginFragmentEtPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:background="@drawable/bg_edit_text"

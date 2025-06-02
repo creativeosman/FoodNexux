@@ -32,19 +32,19 @@
             <EditText
                 android:id="@+id/DialogEtItemName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_below="@+id/DialogTitle"
                 android:layout_marginHorizontal="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/bg_edit_text"
                 android:hint="Enter Name"
                 android:padding="@dimen/_5sdp"
-                android:textColorHint="@color/black" />
+                 />
 
             <EditText
                 android:id="@+id/DialogEtItemRecipe"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_below="@+id/DialogEtItemName"
                 android:layout_marginHorizontal="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -52,12 +52,12 @@
                 android:hint="Enter Ingrediants"
                 android:inputType="textCapCharacters"
                 android:padding="@dimen/_5sdp"
-                android:textColorHint="@color/black" />
+                 />
 
             <EditText
                 android:id="@+id/DialogEtItemPrice"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_below="@+id/DialogEtItemRecipe"
                 android:layout_marginHorizontal="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -65,7 +65,7 @@
                 android:hint="Enter Price in Rs"
                 android:inputType="number"
                 android:padding="@dimen/_5sdp"
-                android:textColorHint="@color/black" />
+                 />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/DialogBtnAdd"
@@ -78,10 +78,8 @@
                 android:text="@string/add"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
-                android:elevation="15dp"
-                android:translationZ="8dp"
-                app:cornerRadius="12dp"
-                app:strokeWidth="3dp"
+                app:cornerRadius="9dp"
+                app:strokeWidth="1dp"
                 app:strokeColor="@color/white"
                 android:backgroundTint="@android:color/transparent" />
 

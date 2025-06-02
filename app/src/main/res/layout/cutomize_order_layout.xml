@@ -22,7 +22,7 @@
         <EditText
             android:id="@+id/CustomizeOrderEtCustomizedRecipie"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_40sdp"
             android:background="@drawable/bg_edit_text"
             android:layout_below="@id/title"
             android:hint="Custmized Recipe"
@@ -35,17 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/CustomizeOrderEtCustomizedRecipie"
             android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/_15sdp"
+            android:layout_margin="@dimen/_20sdp"
             android:textSize="15sp"
             android:textColor="@android:color/black"
-            android:elevation="15dp"
-            android:translationZ="8dp"
-            app:cornerRadius="12dp"
-            app:strokeWidth="4dp"
+            app:cornerRadius="9dp"
+            app:strokeWidth="1dp"
             app:strokeColor="@color/black"
             android:backgroundTint="@android:color/white"
             android:text="Add To Cart"
-
             />
 
     </RelativeLayout>

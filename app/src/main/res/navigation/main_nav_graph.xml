@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/ownerSignUpFragment"
-        android:name="com.example.foodnexus.fragments.OwnerSignUpFragment"
+        android:name="com.example.foodnexus.ViewModels.OwnerSignUpFragment"
         android:label="fragment_owner_sign_up"
         tools:layout="@layout/fragment_owner_sign_up" >
         <action

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_150sdp"
+    android:layout_height="@dimen/_120sdp"
     android:orientation="horizontal"
     android:gravity="center">
 
@@ -44,10 +44,11 @@
                 android:layout_width="@dimen/_36sdp"
                 android:layout_height="@dimen/_36sdp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/menu"
                 android:padding="@dimen/_6sdp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:src="@drawable/menu"
+                app:layout_constraintBottom_toBottomOf="@+id/TvPrice"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Item Name -->
             <TextView
@@ -86,19 +87,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rs."
-                android:textSize="@dimen/_14ssp"
                 android:textColor="@color/primaryColor"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/CardView"
-                app:layout_constraintStart_toStartOf="@+id/TvItemName" />
+                app:layout_constraintStart_toStartOf="@+id/TvItemName"
+                app:layout_constraintTop_toBottomOf="@+id/TvRecipe" />
+
             <TextView
                 android:id="@+id/TvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unknown"
-                android:textSize="@dimen/_14ssp"
                 android:textColor="@color/primaryColor"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/CardView"
-                app:layout_constraintStart_toEndOf="@+id/rs" />
+                app:layout_constraintStart_toEndOf="@+id/rs"
+                app:layout_constraintTop_toBottomOf="@+id/TvRecipe" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
