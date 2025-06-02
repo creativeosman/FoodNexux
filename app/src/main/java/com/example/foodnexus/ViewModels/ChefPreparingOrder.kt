@@ -1,60 +1,118 @@
 package com.example.foodnexus.ViewModels
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodnexus.Adapters.ChefOrderAdapter
+import com.example.foodnexus.Models.ChefOrderStructure
 import com.example.foodnexus.R
+import com.example.foodnexus.databinding.FragmentChefOrderReceivingBinding
+import com.example.foodnexus.databinding.FragmentChefPreparingOrderBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.collections.get
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChefPreparingOrder.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChefPreparingOrder : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentChefPreparingOrderBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var bottomNav: BottomNavigationView
+    private val firestore = FirebaseFirestore.getInstance()
+    private lateinit var adapter: ChefOrderAdapter
+    private val orders = mutableListOf<ChefOrderStructure>()
+    private lateinit var ownerId: String
+    private var activeFragment: Fragment? = null
+    private val fragmentMap = mutableMapOf<String, Fragment>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chef_preparing_order, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChefPreparingOrderBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChefPreparingOrder.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChefPreparingOrder().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        ownerId = requireContext().getSharedPreferences("Details", 0)
+            .getString("ownerId", "").orEmpty()
+
+        adapter = ChefOrderAdapter(
+            orders,
+            onAccept = { orderId -> changeStatus(orderId, "accepted") },
+            onReject = { orderId -> changeStatus(orderId, "declined") }
+        )
+
+        binding.rvChefOrders.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@ChefPreparingOrder.adapter
+        }
+        fetchPendingOrders()
+    }
+
+
+    private fun fetchPendingOrders() {
+        firestore.collection("Restaurants")
+            .document(ownerId)
+            .collection("Pending Orders")
+            .whereEqualTo("Status", "preparing")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Toast.makeText(requireContext(), "Error loading orders", Toast.LENGTH_SHORT)
+                        .show()
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    orders.clear()
+                    for (doc in snapshot.documents) {
+                        val id = doc.id
+                        val total = doc.getString("totalPrice").orEmpty()
+
+                        val items = (doc.get("items") as? List<*>)
+                            ?.mapNotNull { item ->
+                                val map = item as? Map<*, *> ?: return@mapNotNull null
+                                val name = map["itemName"]?.toString() ?: return@mapNotNull null
+                                val quantity = when (val q = map["quantity"]) {
+                                    is Long -> q.toInt()
+                                    is Int -> q
+                                    is Double -> q.toInt()
+                                    else -> 0
+                                }
+                                ChefOrderStructure.Item(name, quantity)
+                            }.orEmpty()
+
+                        orders.add(ChefOrderStructure(id, total, items))
+                    }
+
+                    adapter.notifyDataSetChanged()
+                } else {
+                    orders.clear()
+                    adapter.notifyDataSetChanged()
                 }
             }
+    }
+
+    private fun changeStatus(orderId: String, newStatus: String) {
+        firestore.collection("Restaurants")
+            .document(ownerId)
+            .collection("Pending Orders")
+            .document(orderId)
+            .update("Status", newStatus)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Order $newStatus", Toast.LENGTH_SHORT).show()
+                fetchPendingOrders()
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to update order", Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
