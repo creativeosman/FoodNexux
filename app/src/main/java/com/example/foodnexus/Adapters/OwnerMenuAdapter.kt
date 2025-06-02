@@ -1,5 +1,6 @@
 package com.example.foodnexus.Adapters
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
@@ -88,6 +89,7 @@ class OwnerMenuAdapter(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showUpdateDialog(itemData: OwnerMenuStructure, position: Int) {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.add_resturant_menu_dialog)
