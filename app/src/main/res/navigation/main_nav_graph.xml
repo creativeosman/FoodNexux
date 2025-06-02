@@ -120,4 +120,19 @@
         android:name="com.example.foodnexus.ViewModels.WaiterCartFragment"
         android:label="fragment_waiter_cart"
         tools:layout="@layout/fragment_waiter_cart" />
+    <fragment
+        android:id="@+id/chefPendingOrder"
+        android:name="com.example.foodnexus.ViewModels.ChefPendingOrder"
+        android:label="fragment_chef_pending_order"
+        tools:layout="@layout/fragment_chef_pending_order" />
+    <fragment
+        android:id="@+id/chefReadyOrder"
+        android:name="com.example.foodnexus.ViewModels.ChefReadyOrder"
+        android:label="fragment_chef_ready_order"
+        tools:layout="@layout/fragment_chef_ready_order" />
+    <fragment
+        android:id="@+id/chefPreparingOrder"
+        android:name="com.example.foodnexus.ViewModels.ChefPreparingOrder"
+        android:label="fragment_chef_preparing_order"
+        tools:layout="@layout/fragment_chef_preparing_order" />
 </navigation>
