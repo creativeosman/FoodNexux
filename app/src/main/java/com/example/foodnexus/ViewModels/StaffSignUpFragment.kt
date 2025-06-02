@@ -37,20 +37,23 @@ class StaffSignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
-            SignupFragmentTvLoginLink.setOnClickListener {
-                findNavController().navigate(R.id.action_staffSignUpFragment_to_loginFragment)
-            }
+        // Navigate to login if user taps “Already have an account?”
+        binding.SignupFragmentTvLoginLink.setOnClickListener {
+            findNavController().navigate(R.id.action_staffSignUpFragment_to_loginFragment)
+        }
 
-            val roles = listOf("Waiter", "Chef")
-            SignupFragmentSpRole.adapter = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                roles
-            )
+        // Populate Role spinner with “Waiter” / “Chef”
+        val roles = listOf("Waiter", "Chef")
+        binding.SignupFragmentSpRole.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            roles
+        )
 
-            SignupFragmentBtnSignUp.setOnClickListener {
-                if (validateInputs()) performSignUp()
+        // Sign up button
+        binding.SignupFragmentBtnSignUp.setOnClickListener {
+            if (validateInputs()) {
+                performSignUp()
             }
         }
     }
@@ -61,16 +64,18 @@ class StaffSignUpFragment : Fragment() {
     }
 
     private fun performSignUp() {
-        val email = binding.SignupFragmentEtEmail.text.toString().trim()
+        val email    = binding.SignupFragmentEtEmail.text.toString().trim()
         val password = binding.SignupFragmentEtPassword.text.toString().trim()
-        val ownerId = binding.SignupFragmentEtStaffId.text.toString().trim()
+        val ownerId  = binding.SignupFragmentEtStaffId.text.toString().trim()
 
         Utils.showProgress(progressDialog)
         lifecycleScope.launch {
             try {
+                // 1) Create the Firebase Auth user
                 auth.createUserWithEmailAndPassword(email, password).await()
                 auth.currentUser?.sendEmailVerification()?.await()
 
+                // 2) Save staff + role in RTDB
                 saveStaffToRTDB(ownerId, email)
 
                 Utils.showToast(requireContext(), "Staff account created! Verification email sent.")
@@ -84,6 +89,7 @@ class StaffSignUpFragment : Fragment() {
     }
 
     private suspend fun saveStaffToRTDB(ownerId: String, email: String) {
+        // 1) Check that the ownerId actually exists under /Restaurants/<ownerId>
         val ownerRef = dbRef.child("Restaurants").child(ownerId)
         val ownerSnap = ownerRef.get().await()
         if (!ownerSnap.exists()) {
@@ -93,22 +99,37 @@ class StaffSignUpFragment : Fragment() {
 
         val uid = auth.currentUser?.uid ?: return
 
+        // 2) Prepare the staff data
         val staffData = mapOf(
-            "name" to binding.SignupFragmentEtStaffName.text.toString().trim(),
+            "name"       to binding.SignupFragmentEtStaffName.text.toString().trim(),
             "providedId" to ownerId,
-            "email" to email,
+            "email"      to email,
             "phoneNumber" to binding.SignupFragmentEtPhoneNumber.text.toString().trim(),
-            "role" to "Staff",
-            "category" to binding.SignupFragmentSpRole.selectedItem.toString()
+            "role"       to "Staff",
+            "category"   to binding.SignupFragmentSpRole.selectedItem.toString()
         )
+
+        // 3) Prepare the role node; LOWERCASE + replace . → _
+        val normalizedEmailKey = email.lowercase().replace(".", "_")
         val roleData = mapOf(
-            "role" to binding.SignupFragmentSpRole.selectedItem.toString(),
+            "role"       to binding.SignupFragmentSpRole.selectedItem.toString(),
             "providedId" to ownerId
         )
 
-        // Set values in RTDB
-        dbRef.child("Restaurants").child(ownerId).child("Staff").child(uid).setValue(staffData).await()
-        dbRef.child("Roles").child(email.replace(".", "_")).setValue(roleData).await()
+        // 4) Write to two places:
+        //    a) /Restaurants/<ownerId>/Staff/<uid>  ← staffData
+        //    b) /Roles/<lowercase_email_key>         ← roleData
+        dbRef.child("Restaurants")
+            .child(ownerId)
+            .child("Staff")
+            .child(uid)
+            .setValue(staffData)
+            .await()
+
+        dbRef.child("Roles")
+            .child(normalizedEmailKey)
+            .setValue(roleData)
+            .await()
     }
 
     private fun validateInputs(): Boolean {
@@ -118,15 +139,27 @@ class StaffSignUpFragment : Fragment() {
             }
 
             return when {
-                SignupFragmentEtStaffName.text.isBlank() -> { showError(SignupFragmentEtStaffName, "Enter full name"); false }
-                SignupFragmentEtStaffId.text.isBlank() -> { showError(SignupFragmentEtStaffId, "Enter owner ID"); false }
-                SignupFragmentEtEmail.text.isBlank() -> { showError(SignupFragmentEtEmail, "Enter email"); false }
-                SignupFragmentEtPassword.text.isBlank() -> { showError(SignupFragmentEtPassword, "Enter password"); false }
-                SignupFragmentEtConfirmPassword.text.isBlank() -> { showError(SignupFragmentEtConfirmPassword, "Confirm password"); false }
+                SignupFragmentEtStaffName.text.isBlank() -> {
+                    showError(SignupFragmentEtStaffName, "Enter full name"); false
+                }
+                SignupFragmentEtStaffId.text.isBlank() -> {
+                    showError(SignupFragmentEtStaffId, "Enter owner ID"); false
+                }
+                SignupFragmentEtEmail.text.isBlank() -> {
+                    showError(SignupFragmentEtEmail, "Enter email"); false
+                }
+                SignupFragmentEtPassword.text.isBlank() -> {
+                    showError(SignupFragmentEtPassword, "Enter password"); false
+                }
+                SignupFragmentEtConfirmPassword.text.isBlank() -> {
+                    showError(SignupFragmentEtConfirmPassword, "Confirm password"); false
+                }
                 SignupFragmentEtPassword.text.toString() != SignupFragmentEtConfirmPassword.text.toString() -> {
                     showError(SignupFragmentEtConfirmPassword, "Passwords do not match"); false
                 }
-                SignupFragmentEtPhoneNumber.text.isBlank() -> { showError(SignupFragmentEtPhoneNumber, "Enter phone number"); false }
+                SignupFragmentEtPhoneNumber.text.isBlank() -> {
+                    showError(SignupFragmentEtPhoneNumber, "Enter phone number"); false
+                }
                 else -> true
             }
         }
