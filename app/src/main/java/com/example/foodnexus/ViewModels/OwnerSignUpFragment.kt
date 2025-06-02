@@ -12,7 +12,7 @@ import com.example.foodnexus.R
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentOwnerSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.tasks.await
 
 class OwnerSignUpFragment : Fragment() {
@@ -20,7 +20,7 @@ class OwnerSignUpFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth by lazy { FirebaseAuth.getInstance() }
-    private val db by lazy { FirebaseFirestore.getInstance() }
+    private val db by lazy { FirebaseDatabase.getInstance().reference }
     private val progressDialog by lazy { createProgressDialog() }
 
     override fun onCreateView(
@@ -59,16 +59,13 @@ class OwnerSignUpFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             try {
-                // Create account
                 auth.createUserWithEmailAndPassword(email, password).await()
                 auth.currentUser?.sendEmailVerification()?.await()
 
-                // Save to Firestore
-                saveUserToFirestore()
+                saveUserToRealtimeDb()
 
                 Utils.showToast(requireContext(), "Account created! Verification email sent.")
                 findNavController().navigate(R.id.action_ownerSignUpFragment_to_loginFragment)
-
             } catch (e: Exception) {
                 Utils.showToast(requireContext(), "Sign up failed: ${e.localizedMessage}")
             } finally {
@@ -77,9 +74,10 @@ class OwnerSignUpFragment : Fragment() {
         }
     }
 
-    private suspend fun saveUserToFirestore() {
+    private suspend fun saveUserToRealtimeDb() {
         val uid = auth.currentUser?.uid ?: return
         val email = binding.SignupFragmentEtEmail.text.toString().trim()
+        val safeEmail = email.replace(".", ",")
 
         val userData = mapOf(
             "ownerName" to binding.SignupFragmentEtOwnerName.text.toString().trim(),
@@ -92,15 +90,11 @@ class OwnerSignUpFragment : Fragment() {
 
         val roleData = mapOf("role" to "Owner")
 
-        // Batch write for consistency
-        val batch = db.batch()
-        val restaurantRef = db.collection("Restaurants").document(uid)
-        val rolesRef = db.collection("Roles").document(email)
+        // Save under /Restaurants/{uid}
+        db.child("Restaurants").child(uid).setValue(userData).await()
 
-        batch.set(restaurantRef, userData)
-        batch.set(rolesRef, roleData)
-
-        batch.commit().await()
+        // Save under /Roles/{email}
+        db.child("Roles").child(safeEmail).setValue(roleData).await()
     }
 
     private fun validateInputs(): Boolean {
@@ -108,7 +102,6 @@ class OwnerSignUpFragment : Fragment() {
             fun View.showError(msg: String) {
                 when (this) {
                     is androidx.appcompat.widget.AppCompatEditText -> error = msg
-                    else -> {}
                 }
             }
 
@@ -117,7 +110,7 @@ class OwnerSignUpFragment : Fragment() {
                 SignupFragmentEtEmail.text.isBlank() -> { SignupFragmentEtEmail.showError("Enter your email"); false }
                 SignupFragmentEtPassword.text.isBlank() -> { SignupFragmentEtPassword.showError("Enter a password"); false }
                 SignupFragmentEtConfirmPassword.text.isBlank() -> { SignupFragmentEtConfirmPassword.showError("Confirm your password"); false }
-                binding.SignupFragmentEtPassword.text.toString() != binding.SignupFragmentEtConfirmPassword.text.toString() -> {
+                SignupFragmentEtPassword.text.toString() != SignupFragmentEtConfirmPassword.text.toString() -> {
                     SignupFragmentEtConfirmPassword.showError("Passwords do not match"); false }
                 SignupFragmentEtPhoneNumber.text.isBlank() -> { SignupFragmentEtPhoneNumber.showError("Enter phone number"); false }
                 SignupFragmentEtRestaurantName.text.isBlank() -> { SignupFragmentEtRestaurantName.showError("Enter restaurant name"); false }

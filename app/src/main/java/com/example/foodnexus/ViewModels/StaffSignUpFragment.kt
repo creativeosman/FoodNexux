@@ -13,7 +13,10 @@ import com.example.foodnexus.R
 import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentStaffSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -22,7 +25,7 @@ class StaffSignUpFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth by lazy { FirebaseAuth.getInstance() }
-    private val db by lazy { FirebaseFirestore.getInstance() }
+    private val db by lazy { FirebaseDatabase.getInstance().reference }
     private val progressDialog by lazy { createProgressDialog() }
 
     override fun onCreateView(
@@ -42,7 +45,6 @@ class StaffSignUpFragment : Fragment() {
                 findNavController().navigate(R.id.action_staffSignUpFragment_to_loginFragment)
             }
 
-            // Setup role dropdown
             val roles = listOf("Waiter", "Chef")
             SignupFragmentSpRole.adapter = ArrayAdapter(
                 requireContext(),
@@ -69,12 +71,10 @@ class StaffSignUpFragment : Fragment() {
         Utils.showProgress(progressDialog)
         lifecycleScope.launch {
             try {
-                // Create auth user
                 auth.createUserWithEmailAndPassword(email, password).await()
                 auth.currentUser?.sendEmailVerification()?.await()
 
-                // Verify owner existence and save data
-                saveStaffToFirestore(ownerId, email)
+                saveStaffToRealtimeDb(ownerId, email)
 
                 Utils.showToast(requireContext(), "Staff account created! Verification email sent.")
                 findNavController().navigate(R.id.action_staffSignUpFragment_to_loginFragment)
@@ -86,37 +86,41 @@ class StaffSignUpFragment : Fragment() {
         }
     }
 
-    private suspend fun saveStaffToFirestore(ownerId: String, email: String) {
-        // Check owner document
-        val ownerRef = db.collection("Restaurants").document(ownerId)
-        val ownerSnap = ownerRef.get().await()
-        if (!ownerSnap.exists()) {
-            Utils.showToast(requireContext(), "Owner ID does not exist.")
-            return
-        }
-
-        // Prepare data
+    private suspend fun saveStaffToRealtimeDb(ownerId: String, email: String) {
         val uid = auth.currentUser?.uid ?: return
-        val staffData = mapOf(
-            "name" to binding.SignupFragmentEtStaffName.text.toString().trim(),
-            "providedId" to ownerId,
-            "email" to email,
-            "phoneNumber" to binding.SignupFragmentEtPhoneNumber.text.toString().trim(),
-            "role" to "Staff",
-            "category" to binding.SignupFragmentSpRole.selectedItem.toString()
-        )
-        val roleData = mapOf(
-            "role" to binding.SignupFragmentSpRole.selectedItem.toString(),
-            "providedId" to ownerId
-        )
 
-        // Batch write: add staff under owner and record role
-        db.runBatch { batch ->
-            val staffRef = ownerRef.collection("Staff").document(uid)
-            val rolesRef = db.collection("Roles").document(email)
-            batch.set(staffRef, staffData)
-            batch.set(rolesRef, roleData)
-        }.await()
+        db.child("Restaurants").child(ownerId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        Utils.showToast(requireContext(), "Owner ID does not exist.")
+                        return
+                    }
+
+                    val staffData = mapOf(
+                        "name" to binding.SignupFragmentEtStaffName.text.toString().trim(),
+                        "providedId" to ownerId,
+                        "email" to email,
+                        "phoneNumber" to binding.SignupFragmentEtPhoneNumber.text.toString().trim(),
+                        "role" to "Staff",
+                        "category" to binding.SignupFragmentSpRole.selectedItem.toString()
+                    )
+                    val roleData = mapOf(
+                        "role" to binding.SignupFragmentSpRole.selectedItem.toString(),
+                        "providedId" to ownerId
+                    )
+
+                    val staffRef = db.child("Restaurants").child(ownerId).child("Staff").child(uid)
+                    val roleRef = db.child("Roles").child(email.replace(".", ","))
+
+                    staffRef.setValue(staffData)
+                    roleRef.setValue(roleData)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Utils.showToast(requireContext(), "DB Error: ${error.message}")
+                }
+            })
     }
 
     private fun validateInputs(): Boolean {
