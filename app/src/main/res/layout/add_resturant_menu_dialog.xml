@@ -49,7 +49,7 @@
                 android:layout_marginHorizontal="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/bg_edit_text"
-                android:hint="Enter Recipe"
+                android:hint="Enter Ingrediants"
                 android:inputType="textCapCharacters"
                 android:padding="@dimen/_5sdp"
                 android:textColorHint="@color/black" />

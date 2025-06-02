@@ -48,7 +48,9 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_restaurantMenuFragment"
-            app:destination="@id/restaurantMenuFragment" />
+            app:destination="@id/restaurantMenuFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loginFragment_to_roleAssignFragment"
             app:destination="@id/roleAssignFragment" />

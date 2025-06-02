@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rs."
                 android:textSize="@dimen/_14ssp"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="@color/primaryColor"
                 app:layout_constraintBottom_toBottomOf="@+id/CardView"
                 app:layout_constraintStart_toStartOf="@+id/TvItemName" />
             <TextView
