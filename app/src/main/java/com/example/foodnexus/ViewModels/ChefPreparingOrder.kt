@@ -9,23 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.ChefOrderAdapter
 import com.example.foodnexus.Models.ChefOrderStructure
-import com.example.foodnexus.R
-import com.example.foodnexus.databinding.FragmentChefOrderReceivingBinding
 import com.example.foodnexus.databinding.FragmentChefPreparingOrderBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.collections.get
+import com.google.firebase.database.*
 
 class ChefPreparingOrder : Fragment() {
     private var _binding: FragmentChefPreparingOrderBinding? = null
     private val binding get() = _binding!!
-    private lateinit var bottomNav: BottomNavigationView
-    private val firestore = FirebaseFirestore.getInstance()
+    private val database = FirebaseDatabase.getInstance().reference
     private lateinit var adapter: ChefOrderAdapter
     private val orders = mutableListOf<ChefOrderStructure>()
     private lateinit var ownerId: String
-    private var activeFragment: Fragment? = null
-    private val fragmentMap = mutableMapOf<String, Fragment>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -52,62 +45,58 @@ class ChefPreparingOrder : Fragment() {
         fetchPendingOrders()
     }
 
-
     private fun fetchPendingOrders() {
-        firestore.collection("Restaurants")
-            .document(ownerId)
-            .collection("Pending Orders")
-            .whereEqualTo("Status", "preparing")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Toast.makeText(requireContext(), "Error loading orders", Toast.LENGTH_SHORT)
-                        .show()
-                    return@addSnapshotListener
-                }
+        val ordersRef = database.child("Restaurants")
+            .child(ownerId)
+            .child("Pending Orders")
 
-                if (snapshot != null && !snapshot.isEmpty) {
+        ordersRef.orderByChild("Status").equalTo("preparing")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
                     orders.clear()
-                    for (doc in snapshot.documents) {
-                        val id = doc.id
-                        val total = doc.getString("totalPrice").orEmpty()
+                    for (orderSnapshot in snapshot.children) {
+                        val id = orderSnapshot.key ?: continue
+                        val total = orderSnapshot.child("totalPrice").getValue(String::class.java).orEmpty()
 
-                        val items = (doc.get("items") as? List<*>)
-                            ?.mapNotNull { item ->
-                                val map = item as? Map<*, *> ?: return@mapNotNull null
-                                val name = map["itemName"]?.toString() ?: return@mapNotNull null
-                                val quantity = when (val q = map["quantity"]) {
-                                    is Long -> q.toInt()
-                                    is Int -> q
-                                    is Double -> q.toInt()
-                                    else -> 0
-                                }
-                                ChefOrderStructure.Item(name, quantity)
-                            }.orEmpty()
+                        val itemsList = mutableListOf<ChefOrderStructure.Item>()
+                        val itemsSnapshot = orderSnapshot.child("items")
 
-                        orders.add(ChefOrderStructure(id, total, items))
+                        for (itemSnapshot in itemsSnapshot.children) {
+                            val name = itemSnapshot.child("itemName").getValue(String::class.java) ?: continue
+                            val quantity = when (val q = itemSnapshot.child("quantity").value) {
+                                is Long -> q.toInt()
+                                is Int -> q
+                                is Double -> q.toInt()
+                                else -> 0
+                            }
+                            itemsList.add(ChefOrderStructure.Item(name, quantity))
+                        }
+
+                        orders.add(ChefOrderStructure(id, total, itemsList))
                     }
 
                     adapter.notifyDataSetChanged()
-                } else {
-                    orders.clear()
-                    adapter.notifyDataSetChanged()
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error loading orders", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun changeStatus(orderId: String, newStatus: String) {
-        firestore.collection("Restaurants")
-            .document(ownerId)
-            .collection("Pending Orders")
-            .document(orderId)
-            .update("Status", newStatus)
+        val orderRef = database.child("Restaurants")
+            .child(ownerId)
+            .child("Pending Orders")
+            .child(orderId)
+
+        orderRef.child("Status").setValue(newStatus)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Order $newStatus", Toast.LENGTH_SHORT).show()
                 fetchPendingOrders()
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to update order", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Failed to update order", Toast.LENGTH_SHORT).show()
             }
     }
 

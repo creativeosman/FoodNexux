@@ -1,6 +1,5 @@
 package com.example.foodnexus.ViewModels
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,25 +10,25 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.OwnerSalesAdapter
-import com.example.foodnexus.Utils
-import com.example.foodnexus.R
 import com.example.foodnexus.Models.OwnerSalesStructure
+import com.example.foodnexus.R
+import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentResturantsSalesBinding
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.*
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 class OwnerSalesFragment : Fragment() {
     private var _binding: FragmentResturantsSalesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var firestore: FirebaseFirestore
+    private lateinit var database: FirebaseDatabase
     private lateinit var userId: String
     private lateinit var orderList: ArrayList<OwnerSalesStructure>
     private lateinit var adapter: OwnerSalesAdapter
     private lateinit var loadingDialog: Dialog
     private lateinit var preferences: SharedPreferences
-    private lateinit var currentDate:String
+    private lateinit var currentDate: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,13 +46,13 @@ class OwnerSalesFragment : Fragment() {
     }
 
     private fun init() {
-        firestore = FirebaseFirestore.getInstance()
+        database = FirebaseDatabase.getInstance()
         preferences = requireContext().getSharedPreferences("Details", Context.MODE_PRIVATE)
-        currentDate= SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).toString()
+        currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         userId = preferences.getString("userId", null).toString()
 
         orderList = ArrayList()
-        adapter = OwnerSalesAdapter(orderList,this,userId)
+        adapter = OwnerSalesAdapter(orderList, this, userId)
 
         binding.RestaurantSalesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.RestaurantSalesRecyclerView.adapter = adapter
@@ -64,31 +63,35 @@ class OwnerSalesFragment : Fragment() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun loadOrders() {
         Utils.showProgress(loadingDialog)
-        firestore.collection("Restaurants")
-            .document(userId)
-            .collection("Orders")
-            .document("Completed Orders")
-            .collection(currentDate)
-            .get()
-            .addOnSuccessListener { docs ->
+
+        val ordersRef = database.reference
+            .child("Restaurants")
+            .child(userId)
+            .child("Orders")
+            .child("Completed Orders")
+            .child(currentDate)
+
+        ordersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 orderList.clear()
-                for (doc in docs) {
-                    val orderId = doc.id
-                    val items = doc.getString("OrderedItems") ?: "Unknown"
-                    val totalAmount = doc.getDouble("TotalAmount") ?: 0.0
+                for (orderSnap in snapshot.children) {
+                    val orderId = orderSnap.key ?: continue
+                    val items = orderSnap.child("OrderedItems").getValue(String::class.java) ?: "Unknown"
+                    val totalAmount = orderSnap.child("TotalAmount").getValue(Double::class.java) ?: 0.0
+
                     orderList.add(OwnerSalesStructure(orderId, items, totalAmount))
                 }
                 adapter.notifyDataSetChanged()
-            }
-            .addOnFailureListener { e ->
-                Utils.showToast(requireContext(), "Failed to load orders: ${e.localizedMessage}")
-            }
-            .addOnCompleteListener {
                 Utils.hideProgress(loadingDialog)
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Utils.showToast(requireContext(), "Failed to load orders: ${error.message}")
+                Utils.hideProgress(loadingDialog)
+            }
+        })
     }
 
     override fun onDestroyView() {

@@ -15,15 +15,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodnexus.Models.OwnerMenuStructure
 import com.example.foodnexus.R
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
 
 class OwnerMenuAdapter(
     private var arrayList: ArrayList<OwnerMenuStructure>,
     private var context: Context,
-    private var userId:String
-): RecyclerView.Adapter<OwnerMenuAdapter.ViewHolder>() {
-    private var firestore=FirebaseFirestore.getInstance()
-    inner class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
+    private var userId: String
+) : RecyclerView.Adapter<OwnerMenuAdapter.ViewHolder>() {
+
+    private val dbRef = FirebaseDatabase.getInstance().reference
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemName: TextView = itemView.findViewById(R.id.TvItemName)
         val itemRecipe: TextView = itemView.findViewById(R.id.TvRecipe)
         val itemPrice: TextView = itemView.findViewById(R.id.TvPrice)
@@ -31,26 +33,23 @@ class OwnerMenuAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view=LayoutInflater.from(parent.context).inflate(R.layout.owner_menu_recycler_view,parent,false)
-
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.owner_menu_recycler_view, parent, false)
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return arrayList.size
-    }
+    override fun getItemCount(): Int = arrayList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val itemData=arrayList[position]
+        val itemData = arrayList[position]
 
-        holder.itemName.text=itemData.itemName
-        holder.itemRecipe.text=itemData.itemRecipe
-        holder.itemPrice.text=itemData.itemPrice.toString()
+        holder.itemName.text = itemData.itemName
+        holder.itemRecipe.text = itemData.itemRecipe
+        holder.itemPrice.text = itemData.itemPrice.toString()
 
         holder.itemMenu.setOnClickListener {
             showPopupMenu(holder.itemMenu, itemData, position)
         }
-
     }
 
     private fun showPopupMenu(view: View, itemData: OwnerMenuStructure, position: Int) {
@@ -73,9 +72,8 @@ class OwnerMenuAdapter(
             setMessage("Are you sure you want to delete this Item?")
             setPositiveButton("Delete") { _, _ ->
                 Toast.makeText(context, "Deleting...", Toast.LENGTH_SHORT).show()
-                firestore.collection("Restaurants").document(userId)
-                    .collection("Menu").document(itemData.itemId)
-                    .delete()
+                dbRef.child("Restaurants").child(userId).child("Menu").child(itemData.itemId)
+                    .removeValue()
                     .addOnSuccessListener {
                         arrayList.removeAt(position)
                         notifyItemRemoved(position)
@@ -106,24 +104,32 @@ class OwnerMenuAdapter(
         btnUpdate.setOnClickListener {
             val newItemName = itemNameEditText.text.toString().trim()
             val newItemRecipe = itemRecipeEditText.text.toString().trim()
-            val newItemPrice = itemPriceEditText.text.toString().trim().toDouble()
+            val newItemPriceText = itemPriceEditText.text.toString().trim()
 
-            if (newItemName.isEmpty() || newItemRecipe.isEmpty()||newItemPrice==0.0) {
+            if (newItemName.isEmpty() || newItemRecipe.isEmpty() || newItemPriceText.isEmpty()) {
                 Toast.makeText(context, "Please enter all details", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            val newItemPrice = newItemPriceText.toDoubleOrNull()
+            if (newItemPrice == null || newItemPrice == 0.0) {
+                Toast.makeText(context, "Enter a valid price", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             Toast.makeText(context, "Updating...", Toast.LENGTH_SHORT).show()
-            val updatedData= hashMapOf(
-                "Item Name" to newItemName,
-                "Item Recipe" to newItemRecipe,
-                "Item Price" to newItemPrice
+
+            val updatedData = mapOf(
+                "itemId" to itemData.itemId,
+                "itemName" to newItemName,
+                "itemRecipe" to newItemRecipe,
+                "itemPrice" to newItemPrice
             )
-            firestore.collection("Restaurants").document(userId)
-                .collection("Menu").document(itemData.itemId)
-                .update(updatedData as Map<String, Any>)
+
+            dbRef.child("Restaurants").child(userId).child("Menu").child(itemData.itemId)
+                .updateChildren(updatedData)
                 .addOnSuccessListener {
-                    arrayList[position] = OwnerMenuStructure(itemData.itemId,newItemName, newItemRecipe,newItemPrice)
+                    arrayList[position] = OwnerMenuStructure(itemData.itemId, newItemName, newItemRecipe, newItemPrice)
                     notifyItemChanged(position)
                     Toast.makeText(context, "Item Updated", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
@@ -132,7 +138,7 @@ class OwnerMenuAdapter(
                     Toast.makeText(context, "Failed to update item", Toast.LENGTH_SHORT).show()
                 }
         }
+
         dialog.show()
     }
-
 }
