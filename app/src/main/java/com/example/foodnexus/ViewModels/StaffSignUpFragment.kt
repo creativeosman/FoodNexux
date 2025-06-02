@@ -14,9 +14,6 @@ import com.example.foodnexus.Utils
 import com.example.foodnexus.databinding.FragmentStaffSignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -25,7 +22,7 @@ class StaffSignUpFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val auth by lazy { FirebaseAuth.getInstance() }
-    private val db by lazy { FirebaseDatabase.getInstance().reference }
+    private val dbRef by lazy { FirebaseDatabase.getInstance().reference }
     private val progressDialog by lazy { createProgressDialog() }
 
     override fun onCreateView(
@@ -74,7 +71,7 @@ class StaffSignUpFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password).await()
                 auth.currentUser?.sendEmailVerification()?.await()
 
-                saveStaffToRealtimeDb(ownerId, email)
+                saveStaffToRTDB(ownerId, email)
 
                 Utils.showToast(requireContext(), "Staff account created! Verification email sent.")
                 findNavController().navigate(R.id.action_staffSignUpFragment_to_loginFragment)
@@ -86,41 +83,32 @@ class StaffSignUpFragment : Fragment() {
         }
     }
 
-    private suspend fun saveStaffToRealtimeDb(ownerId: String, email: String) {
+    private suspend fun saveStaffToRTDB(ownerId: String, email: String) {
+        val ownerRef = dbRef.child("Restaurants").child(ownerId)
+        val ownerSnap = ownerRef.get().await()
+        if (!ownerSnap.exists()) {
+            Utils.showToast(requireContext(), "Owner ID does not exist.")
+            return
+        }
+
         val uid = auth.currentUser?.uid ?: return
 
-        db.child("Restaurants").child(ownerId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!snapshot.exists()) {
-                        Utils.showToast(requireContext(), "Owner ID does not exist.")
-                        return
-                    }
+        val staffData = mapOf(
+            "name" to binding.SignupFragmentEtStaffName.text.toString().trim(),
+            "providedId" to ownerId,
+            "email" to email,
+            "phoneNumber" to binding.SignupFragmentEtPhoneNumber.text.toString().trim(),
+            "role" to "Staff",
+            "category" to binding.SignupFragmentSpRole.selectedItem.toString()
+        )
+        val roleData = mapOf(
+            "role" to binding.SignupFragmentSpRole.selectedItem.toString(),
+            "providedId" to ownerId
+        )
 
-                    val staffData = mapOf(
-                        "name" to binding.SignupFragmentEtStaffName.text.toString().trim(),
-                        "providedId" to ownerId,
-                        "email" to email,
-                        "phoneNumber" to binding.SignupFragmentEtPhoneNumber.text.toString().trim(),
-                        "role" to "Staff",
-                        "category" to binding.SignupFragmentSpRole.selectedItem.toString()
-                    )
-                    val roleData = mapOf(
-                        "role" to binding.SignupFragmentSpRole.selectedItem.toString(),
-                        "providedId" to ownerId
-                    )
-
-                    val staffRef = db.child("Restaurants").child(ownerId).child("Staff").child(uid)
-                    val roleRef = db.child("Roles").child(email.replace(".", ","))
-
-                    staffRef.setValue(staffData)
-                    roleRef.setValue(roleData)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Utils.showToast(requireContext(), "DB Error: ${error.message}")
-                }
-            })
+        // Set values in RTDB
+        dbRef.child("Restaurants").child(ownerId).child("Staff").child(uid).setValue(staffData).await()
+        dbRef.child("Roles").child(email.replace(".", "_")).setValue(roleData).await()
     }
 
     private fun validateInputs(): Boolean {
@@ -135,7 +123,7 @@ class StaffSignUpFragment : Fragment() {
                 SignupFragmentEtEmail.text.isBlank() -> { showError(SignupFragmentEtEmail, "Enter email"); false }
                 SignupFragmentEtPassword.text.isBlank() -> { showError(SignupFragmentEtPassword, "Enter password"); false }
                 SignupFragmentEtConfirmPassword.text.isBlank() -> { showError(SignupFragmentEtConfirmPassword, "Confirm password"); false }
-                binding.SignupFragmentEtPassword.text.toString() != binding.SignupFragmentEtConfirmPassword.text.toString() -> {
+                SignupFragmentEtPassword.text.toString() != SignupFragmentEtConfirmPassword.text.toString() -> {
                     showError(SignupFragmentEtConfirmPassword, "Passwords do not match"); false
                 }
                 SignupFragmentEtPhoneNumber.text.isBlank() -> { showError(SignupFragmentEtPhoneNumber, "Enter phone number"); false }

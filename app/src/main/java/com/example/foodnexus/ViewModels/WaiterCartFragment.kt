@@ -97,7 +97,8 @@ class WaiterCartFragment : Fragment() {
         val itemRef = rtdb.child("Restaurants").child(ownerId).child("Staff").child(userId)
             .child("Carts").child(item.itemId)
 
-        val updatedItem = item.copy(itemPrice = item.itemPrice / (item.quantity - 1) * item.quantity)
+        val updatedItem = item.copy(itemPrice = item.itemPrice * item.quantity)
+
         itemRef.setValue(updatedItem).addOnFailureListener {
             Toast.makeText(requireContext(), "Failed to update cart item", Toast.LENGTH_SHORT).show()
         }

@@ -99,7 +99,8 @@ class LoginFragment : Fragment() {
                     return@launch
                 }
 
-                db.child("Roles").child(user.email!!.replace(".", ","))
+                db.child("Roles").child(user.email!!.replace(".", "_"))
+
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (!snapshot.exists()) {

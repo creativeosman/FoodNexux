@@ -89,7 +89,7 @@ class WaiterMenuAdapter(
     }
 
     private fun updateExistingItem(cartRef: DatabaseReference) {
-        cartRef.child("Quantity").runTransaction(object : Transaction.Handler {
+        cartRef.child("quantity").runTransaction(object : Transaction.Handler {
             override fun doTransaction(currentData: MutableData): Transaction.Result {
                 val currentQuantity = currentData.getValue(Int::class.java) ?: 0
                 currentData.value = currentQuantity + 1
@@ -106,19 +106,21 @@ class WaiterMenuAdapter(
         })
     }
 
+
     private fun addNewItem(cartRef: DatabaseReference, menuItem: WaiterMenuStructure) {
         val cartItem = mapOf(
-            "Item Id" to menuItem.itemId,
-            "Item Name" to menuItem.itemName,
-            "Item Price" to menuItem.itemPrice,
-            "Quantity" to 1,
-            "Customize Recipe" to customizeRecipe
+            "itemId" to menuItem.itemId,
+            "itemName" to menuItem.itemName,
+            "itemPrice" to menuItem.itemPrice,
+            "quantity" to 1,
+            "customizeRecipe" to customizeRecipe
         )
 
         cartRef.setValue(cartItem)
             .addOnSuccessListener { showToast("Added to cart") }
             .addOnFailureListener { showToast("Failed to add: ${it.localizedMessage}") }
     }
+
 
     private fun showToast(message: String) {
         if (context is Activity && !context.isDestroyed) {
