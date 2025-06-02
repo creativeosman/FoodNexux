@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:layout_gravity="center"
-        android:background="@drawable/prog_bg"
+        android:background="@color/black"
         />
 
     <TextView
