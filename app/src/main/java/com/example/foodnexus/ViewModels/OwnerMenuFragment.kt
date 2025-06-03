@@ -2,6 +2,8 @@ package com.example.foodnexus.ViewModels
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -22,11 +24,15 @@ import com.example.foodnexus.Utils
 import com.example.foodnexus.caloryApi
 import com.example.foodnexus.databinding.AddResturantMenuDialogBinding
 import com.example.foodnexus.databinding.FragmentRestaurantMenuBinding
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.util.UUID
 
 class OwnerMenuFragment : Fragment() {
     private var _binding: FragmentRestaurantMenuBinding? = null
@@ -36,7 +42,7 @@ class OwnerMenuFragment : Fragment() {
     private lateinit var caloryApiClient: caloryApi
     private lateinit var userId: String
     private lateinit var restaurantName: String
-    private lateinit var arrayList: ArrayList<OwnerMenuStructure>
+    private lateinit var arrayList: java.util.ArrayList<OwnerMenuStructure>
     private lateinit var adapter: OwnerMenuAdapter
     private lateinit var loadingDialog: Dialog
     private lateinit var preferences: SharedPreferences
@@ -69,8 +75,8 @@ class OwnerMenuFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.RestaurantSales -> findNavController().navigate(R.id.action_restaurantMenuFragment_to_resturantsSalesFragment)
                 R.id.copyId -> {
-                    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    val clip = android.content.ClipData.newPlainText("User ID", userId)
+                    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("User ID", userId)
                     clipboard.setPrimaryClip(clip)
                     Toast.makeText(requireContext(), "User ID copied to clipboard", Toast.LENGTH_SHORT).show()
                 }
