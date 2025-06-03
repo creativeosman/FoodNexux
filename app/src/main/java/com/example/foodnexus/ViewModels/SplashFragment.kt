@@ -46,7 +46,7 @@ class SplashFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             when (role) {
                 "Owner" -> findNavController().navigate(R.id.action_splashFragment_to_restaurantMenuFragment)
-                "Waiter" -> findNavController().navigate(R.id.action_splashFragment_to_waiterMenuFragment)
+                "Waiter" -> findNavController().navigate(R.id.action_splashFragment_to_waiterHomeFragment)
                 "Chef" -> findNavController().navigate(R.id.action_splashFragment_to_chefOrderReceivingFragment)
                 else -> showAuthOptions() // Fallback if role is not recognized
             }

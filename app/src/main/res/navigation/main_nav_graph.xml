@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_splashFragment_to_waiterCartFragment"
             app:destination="@id/waiterCartFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_waiterHomeFragment"
+            app:destination="@id/waiterHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/roleAssignFragment"
@@ -60,6 +63,9 @@
         <action
             android:id="@+id/action_loginFragment_to_chefOrderReceivingFragment"
             app:destination="@id/chefOrderReceivingFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_waiterHomeFragment"
+            app:destination="@id/waiterHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/ownerSignUpFragment"
@@ -144,4 +150,9 @@
         android:id="@+id/waiterReadyOrder"
         android:name="com.example.foodnexus.ViewModels.WaiterReadyOrder"
         android:label="WaiterReadyOrder" />
+    <fragment
+        android:id="@+id/waiterHomeFragment"
+        android:name="com.example.foodnexus.ViewModels.WaiterHomeFragment"
+        android:label="fragment_waiter_home"
+        tools:layout="@layout/fragment_waiter_home" />
 </navigation>

@@ -176,7 +176,7 @@ class LoginFragment : Fragment() {
                             }.apply()
 
                             val navId = if (role == "Waiter") {
-                                R.id.action_loginFragment_to_waiterMenuFragment
+                                R.id.action_loginFragment_to_waiterHomeFragment
                             } else {
                                 R.id.action_loginFragment_to_chefOrderReceivingFragment
                             }
