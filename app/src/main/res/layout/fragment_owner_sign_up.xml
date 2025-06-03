@@ -136,6 +136,7 @@
                 android:id="@+id/SignupFragmentBtnSignUp"
                 app:layout_constraintTop_toBottomOf="@id/SignupFragmentEtConfirmPassword"
                 android:text="Sign Up"
+                android:textStyle="italic"
                 android:layout_margin="20dp"
                 android:backgroundTint="@color/primaryColor"
                 app:cornerRadius="15dp"
