@@ -84,16 +84,16 @@
 
             <ImageButton
                 android:id="@+id/btnDecrease"
-                android:layout_width="@dimen/_36sdp"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
                 android:background="@drawable/qty_btn_bg"
                 android:src="@drawable/baseline_remove_24"
                 android:contentDescription="Decrease Quantity" />
 
             <TextView
                 android:id="@+id/cartItemQuantity"
-                android:layout_width="@dimen/_36sdp"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
                 android:gravity="center"
                 android:text="1"
                 android:textSize="@dimen/_14ssp"
@@ -101,8 +101,8 @@
 
             <ImageButton
                 android:id="@+id/btnIncrease"
-                android:layout_width="@dimen/_36sdp"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
                 android:background="@drawable/qty_btn_bg"
                 android:src="@drawable/baseline_add_24"
                 android:contentDescription="Increase Quantity" />

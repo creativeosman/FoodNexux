@@ -50,8 +50,6 @@
                 android:backgroundTint="@color/primaryColor"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
-                android:elevation="15dp"
-                android:translationZ="8dp"
                 app:cornerRadius="12dp"
                 app:strokeColor="@color/white"/>
 
