@@ -1,4 +1,4 @@
-package com.example.foodnexus.fragments
+package com.example.foodnexus.ViewModels
 
 import android.app.Dialog
 import android.os.Bundle

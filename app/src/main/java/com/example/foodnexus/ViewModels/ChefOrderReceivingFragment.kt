@@ -66,13 +66,11 @@ class ChefOrderReceivingFragment : Fragment() {
 
                 R.id.ChefOrdersPending -> {
                     showFragment("PENDING")
-                    Toast.makeText(requireContext(), "Home", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.ChefOrdersPreparing -> {
                     showFragment("PREPARING")
-                    Toast.makeText(requireContext(), "History", Toast.LENGTH_SHORT).show()
                     true
                 }
 

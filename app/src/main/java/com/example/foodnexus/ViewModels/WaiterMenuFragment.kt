@@ -151,6 +151,9 @@ class WaiterMenuFragment : Fragment() {
         binding.RestaurantMenuImgBtnMenu.setOnClickListener {
             findNavController().navigate(R.id.action_waiterMenuFragment_to_waiterCartFragment)
         }
+        binding.RestaurantMenuImgBtnReady.setOnClickListener{
+            findNavController().navigate(R.id.action_waiterMenuFragment_to_waiterReadyOrder)
+        }
     }
 
     override fun onDestroyView() {

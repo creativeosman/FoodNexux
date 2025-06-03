@@ -78,7 +78,7 @@ class OwnerSignUpFragment : Fragment() {
     private suspend fun saveUserToRealtimeDb() {
         val uid = auth.currentUser?.uid ?: return
         val email = binding.SignupFragmentEtEmail.text.toString().trim()
-        val safeEmail = email.replace(".", ",")
+        val safeEmail = email.replace(".", "_")
 
         val userData = mapOf(
             "ownerName" to binding.SignupFragmentEtOwnerName.text.toString().trim(),

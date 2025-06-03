@@ -117,7 +117,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -127,7 +128,8 @@
                 android:background="@drawable/bg_edit_text"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_7sdp" />
+                android:layout_marginTop="@dimen/_7sdp"
+                android:inputType="textPassword"/>
 
 
             <com.google.android.material.button.MaterialButton

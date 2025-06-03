@@ -9,22 +9,25 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodnexus.Adapters.ChefPreparingOrderAdapter
+import com.example.foodnexus.Adapters.WaiterReadyAdapter
 import com.example.foodnexus.Models.ChefOrderPreparingStructure
+import com.example.foodnexus.Models.WaiterReadyStructure
 import com.example.foodnexus.databinding.FragmentChefPreparingOrderBinding
+import com.example.foodnexus.databinding.FragmentWaiterReadyOrderBinding
 import com.google.firebase.database.*
 
-class ChefPreparingOrder : Fragment() {
-    private var _binding: FragmentChefPreparingOrderBinding? = null
+class WaiterReadyOrder : Fragment() {
+    private var _binding: FragmentWaiterReadyOrderBinding? = null
     private val binding get() = _binding!!
     private val database = FirebaseDatabase.getInstance().reference
-    private lateinit var adapter: ChefPreparingOrderAdapter
-    private val orders = mutableListOf<ChefOrderPreparingStructure>()
+    private lateinit var adapter: WaiterReadyAdapter
+    private val orders = mutableListOf<WaiterReadyStructure>()
     private lateinit var ownerId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChefPreparingOrderBinding.inflate(inflater, container, false)
+        _binding = FragmentWaiterReadyOrderBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -34,14 +37,14 @@ class ChefPreparingOrder : Fragment() {
             .getString("ownerId", "")
             .orEmpty()
 
-        adapter = ChefPreparingOrderAdapter(
+        adapter = WaiterReadyAdapter(
             orders,
-            onAccept = { orderId -> changeStatus(orderId, "prepared") }
+            onAccept = { orderId -> changeStatus(orderId, "Completed") }
         )
 
-        binding.rvChefOrderPreparing.apply {
+        binding.rvWaiterReady.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@ChefPreparingOrder.adapter
+            adapter = this@WaiterReadyOrder.adapter
         }
 
         fetchPreparingOrders()
@@ -54,7 +57,7 @@ class ChefPreparingOrder : Fragment() {
             .child("Pending Orders")
 
         // Only pull orders whose Status == "preparing"
-        ordersRef.orderByChild("Status").equalTo("preparing")
+        ordersRef.orderByChild("Status").equalTo("prepared")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     orders.clear()
@@ -68,7 +71,7 @@ class ChefPreparingOrder : Fragment() {
                             .getValue(String::class.java)
                             .orEmpty()
 
-                        orders.add(ChefOrderPreparingStructure(id, total))
+                        orders.add(WaiterReadyStructure(id, total))
                     }
 
                     adapter.notifyDataSetChanged()

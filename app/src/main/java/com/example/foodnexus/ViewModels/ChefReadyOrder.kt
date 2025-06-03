@@ -1,53 +1,91 @@
+// ChefPreparingOrder.kt
 package com.example.foodnexus.ViewModels
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.foodnexus.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodnexus.Adapters.ChefPreparingOrderAdapter
+import com.example.foodnexus.Adapters.ChefReadyOrderAdapter
+import com.example.foodnexus.Models.ChefOrderPreparingStructure
+import com.example.foodnexus.Models.ChefOrderReadyStructure
+import com.example.foodnexus.databinding.FragmentChefPreparingOrderBinding
+import com.example.foodnexus.databinding.FragmentChefReadyOrderBinding
+import com.google.firebase.database.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChefReadyOrder.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChefReadyOrder : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentChefReadyOrderBinding? = null
+    private val binding get() = _binding!!
+    private val database = FirebaseDatabase.getInstance().reference
+    private lateinit var adapter: ChefReadyOrderAdapter
+    private val orders = mutableListOf<ChefOrderReadyStructure>()
+    private lateinit var ownerId: String
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chef_ready_order, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChefReadyOrderBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ownerId = requireContext()
+            .getSharedPreferences("Details", 0)
+            .getString("ownerId", "")
+            .orEmpty()
 
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChefReadyOrder().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        adapter = ChefReadyOrderAdapter(
+            orders
+        )
+
+        binding.rvChefOrderPreparing.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@ChefReadyOrder.adapter
+        }
+
+        fetchPreparingOrders()
+    }
+
+    private fun fetchPreparingOrders() {
+        val ordersRef = database
+            .child("Restaurants")
+            .child(ownerId)
+            .child("Pending Orders")
+
+        // Only pull orders whose Status == "preparing"
+        ordersRef.orderByChild("Status").equalTo("prepared")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    orders.clear()
+
+                    for (orderSnapshot in snapshot.children) {
+                        val id = orderSnapshot.key ?: continue
+
+                        // ← use the exact key "Total Price" (capital T, space, capital P)
+                        val total = orderSnapshot
+                            .child("Total Price")
+                            .getValue(String::class.java)
+                            .orEmpty()
+
+                        orders.add(ChefOrderReadyStructure(id, total))
+                    }
+
+                    adapter.notifyDataSetChanged()
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error loading orders", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

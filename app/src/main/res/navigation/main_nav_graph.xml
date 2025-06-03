@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/staffSignUpFragment"
-        android:name="com.example.foodnexus.fragments.StaffSignUpFragment"
+        android:name="com.example.foodnexus.ViewModels.StaffSignUpFragment"
         android:label="fragment_staff_sign_up"
         tools:layout="@layout/fragment_staff_sign_up" >
         <action
@@ -102,6 +102,9 @@
         <action
             android:id="@+id/action_waiterMenuFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_waiterMenuFragment_to_waiterReadyOrder"
+            app:destination="@id/waiterReadyOrder" />
     </fragment>
     <fragment
         android:id="@+id/chefOrderReceivingFragment"
@@ -137,4 +140,8 @@
         android:name="com.example.foodnexus.ViewModels.ChefPreparingOrder"
         android:label="fragment_chef_preparing_order"
         tools:layout="@layout/fragment_chef_preparing_order" />
+    <fragment
+        android:id="@+id/waiterReadyOrder"
+        android:name="com.example.foodnexus.ViewModels.WaiterReadyOrder"
+        android:label="WaiterReadyOrder" />
 </navigation>

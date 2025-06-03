@@ -24,31 +24,13 @@
             android:textColor="@color/black"/>
 
 
-        <TextView
-            android:id="@+id/CustomizeRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="customize Recipe"
-            android:textColor="@color/black"
-            android:layout_marginTop="@dimen/_3sdp"/>
 
-
-
-        <TextView
-            android:id="@+id/textOrderItems"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 items"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="4dp"/>
         <TextView
             android:id="@+id/textOrderTotal"
             android:layout_width="wrap_content"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
-            android:text="Total: PKR 500.00"
+            android:text="PKR 500.00"
             android:layout_marginTop="4dp"
             android:textSize="22sp"/>
 
@@ -58,28 +40,13 @@
             android:orientation="horizontal"
             android:gravity="end"
             android:layout_marginTop="8dp">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/reject_"
-                android:layout_marginEnd="12dp"
-                android:textSize="15sp"
-                android:textColor="@android:color/black"
-                android:elevation="15dp"
-                android:translationZ="8dp"
-                app:cornerRadius="12dp"
-                app:strokeWidth="3dp"
-                app:strokeColor="@color/black"
-                android:backgroundTint="@android:color/white"
-                />
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAccept"
+                android:id="@+id/btnPrepared"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/accept_"
+                android:text="Completed"
                 android:backgroundTint="@color/primaryColor"
                 android:textSize="15sp"
                 android:textColor="@android:color/white"
